@@ -27,7 +27,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         }}
       >
         <TitleBar.OptionsBox>
-          <TitleBar.Option as="a" href="https://github.com/React95/React95">
+          <TitleBar.Option
+            as="a"
+            target="balnk"
+            href="https://github.com/Mosmain/react-password-generator"
+          >
             <Star variant="16x16_4" />
           </TitleBar.Option>
         </TitleBar.OptionsBox>
