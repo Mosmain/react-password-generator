@@ -1,7 +1,6 @@
 import { Tabs, Tab } from "@react95/core";
 import { GenerationTab } from "./components/GenerationTab";
 import { AboutMeTab } from "./components/AboutMeTab";
-import { GenerateButtons } from "./components/GenerateButtons";
 import { usePasswordGenerator } from "./hooks/usePasswordGenerator";
 import { useCopyToClipboard } from "./hooks/useCopyToClipboard";
 
@@ -34,21 +33,18 @@ function App() {
             password={password}
             passwordLength={passwordLength}
             settings={settings}
+            copied={copied}
+            isButtonsDisabled={isButtonsDisabled}
             setPasswordLength={setPasswordLength}
             toggleSetting={toggleSetting}
-            copied={copied}
+            regenerate={regenerate}
+            onCopy={onCopy}
           />
         </Tab>
         <Tab title="Обо мне">
           <AboutMeTab />
         </Tab>
       </Tabs>
-
-      <GenerateButtons
-        disabled={isButtonsDisabled}
-        onCopy={onCopy}
-        onReset={regenerate}
-      />
     </div>
   );
 }
