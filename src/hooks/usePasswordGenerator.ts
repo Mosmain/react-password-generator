@@ -10,6 +10,7 @@ import {
   limitSpaces,
   shuffleArray,
 } from "../utils";
+import { useLocalStorage } from "./useLocalStorage";
 import { PasswordSettingKey, PasswordSettings } from "../types";
 
 const defaultSettings: PasswordSettings = {
@@ -33,8 +34,14 @@ export const usePasswordGenerator = (
   initialLength: number = MIN_PASSWORD_LENGTH,
   initialSettings: PasswordSettings = defaultSettings
 ) => {
-  const [passwordLength, setPasswordLength] = useState<number>(initialLength);
-  const [settings, setSettings] = useState<PasswordSettings>(initialSettings);
+  const [passwordLength, setPasswordLength] = useLocalStorage<number>(
+    "passwordLength",
+    initialLength
+  );
+  const [settings, setSettings] = useLocalStorage<PasswordSettings>(
+    "passwordSettings",
+    initialSettings
+  );
   const [password, setPassword] = useState<string>("");
   const [manualTrigger, setManualTrigger] = useState<boolean>(false);
   const [isButtonsDisabled, setButtonsDisabled] = useState<boolean>(false);
