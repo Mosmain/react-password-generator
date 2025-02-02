@@ -27,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         }}
       >
         <TitleBar.OptionsBox>
+          <span>GitHub -{"> "}</span>
           <TitleBar.Option
             as="a"
             target="balnk"
