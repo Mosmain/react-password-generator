@@ -41,7 +41,7 @@ export const usePasswordGenerator = (
 
   const getActiveKeys = useCallback((): PasswordSettingKey[] => {
     return Object.entries(settings)
-      .filter((value) => value)
+      .filter(([_, value]) => value)
       .map(([key]) => key as PasswordSettingKey);
   }, [settings]);
 
