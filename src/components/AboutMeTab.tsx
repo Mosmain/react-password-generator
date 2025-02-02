@@ -1,7 +1,7 @@
-import React from "react";
+import { FC } from "react";
 import { Fieldset, Checkbox, Dropdown } from "@react95/core";
 
-export const AboutMeTab: React.FC = () => {
+export const AboutMeTab: FC = () => {
   return (
     <>
       <p

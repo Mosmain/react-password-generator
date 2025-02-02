@@ -1,12 +1,14 @@
-import React from "react";
+import { FC } from "react";
 import { Button } from "@react95/core";
 
 interface GenerateButtonsProps {
+  disabled: boolean;
   onCopy: () => void;
   onReset: () => void;
 }
 
-export const GenerateButtons: React.FC<GenerateButtonsProps> = ({
+export const GenerateButtons: FC<GenerateButtonsProps> = ({
+  disabled,
   onCopy,
   onReset,
 }) => {
@@ -18,10 +20,16 @@ export const GenerateButtons: React.FC<GenerateButtonsProps> = ({
         paddingTop: "0.625rem",
       }}
     >
-      <Button style={{ marginRight: "0.5rem" }} onClick={onCopy}>
+      <Button
+        style={{ marginRight: "0.5rem" }}
+        disabled={disabled}
+        onClick={onCopy}
+      >
         Copy
       </Button>
-      <Button onClick={onReset}>Reset</Button>
+      <Button disabled={disabled} onClick={onReset}>
+        Reset
+      </Button>
     </div>
   );
 };

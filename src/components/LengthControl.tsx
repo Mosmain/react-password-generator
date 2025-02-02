@@ -1,15 +1,13 @@
-import React from "react";
+import { FC } from "react";
 import { Fieldset, Range } from "@react95/core";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "../constants";
 
 interface LengthControlProps {
   length: number;
   onChange: (value: number) => void;
 }
 
-export const LengthControl: React.FC<LengthControlProps> = ({
-  length,
-  onChange,
-}) => {
+export const LengthControl: FC<LengthControlProps> = ({ length, onChange }) => {
   return (
     <Fieldset legend="Длина">
       <div
@@ -19,20 +17,20 @@ export const LengthControl: React.FC<LengthControlProps> = ({
           alignItems: "center",
         }}
       >
-        <span>6</span>
+        <span>{MIN_PASSWORD_LENGTH}</span>
         <Range
           style={{
             margin: "0 12px",
           }}
-          min={6}
-          max={30}
+          min={MIN_PASSWORD_LENGTH}
+          max={MAX_PASSWORD_LENGTH}
           step={1}
           value={length}
           onChange={(e) => {
             onChange(Number(e.target.value));
           }}
         />
-        <span>30</span>
+        <span>{MAX_PASSWORD_LENGTH}</span>
       </div>
 
       <div

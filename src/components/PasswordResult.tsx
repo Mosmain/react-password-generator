@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { Fieldset } from "@react95/core";
 
 interface PasswordResultProps {
@@ -5,7 +6,7 @@ interface PasswordResultProps {
   copied: boolean;
 }
 
-export const PasswordResult: React.FC<PasswordResultProps> = ({
+export const PasswordResult: FC<PasswordResultProps> = ({
   password,
   copied,
 }) => {
@@ -17,7 +18,7 @@ export const PasswordResult: React.FC<PasswordResultProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <span>{password}</span>
+        <pre style={{ margin: 0, fontFamily: "inherit" }}>{password}</pre>
         {copied && <span>Скопировано!</span>}
       </div>
     </Fieldset>

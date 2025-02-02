@@ -1,19 +1,14 @@
+import { FC } from "react";
 import { Fieldset, Tooltip, Checkbox } from "@react95/core";
-import { PasswordSettings } from "../hooks/usePasswordGenerator";
-
-export interface Option {
-  key: keyof PasswordSettings;
-  label: string;
-  tooltip: string;
-}
+import { Option, PasswordSettingKey, PasswordSettings } from "../types";
 
 interface PasswordOptionsProps {
   settings: PasswordSettings;
   options: Option[];
-  onToggle: (key: keyof PasswordSettings) => void;
+  onToggle: (key: PasswordSettingKey) => void;
 }
 
-export const PasswordOptions: React.FC<PasswordOptionsProps> = ({
+export const PasswordOptions: FC<PasswordOptionsProps> = ({
   settings,
   options,
   onToggle,

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-
-export interface PasswordSettings {
-  upper: boolean;
-  lower: boolean;
-  numbers: boolean;
-  spaces: boolean;
-  separators: boolean;
-  symbols: boolean;
-}
+import {
+  charSets,
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from "../constants";
+import {
+  adjustSpaces,
+  getRandomChar,
+  limitSpaces,
+  shuffleArray,
+} from "../utils";
+import { PasswordSettingKey, PasswordSettings } from "../types";
 
 const defaultSettings: PasswordSettings = {
   upper: true,
@@ -18,65 +21,110 @@ const defaultSettings: PasswordSettings = {
   symbols: false,
 };
 
-const charSets: Record<keyof PasswordSettings, string> = {
-  upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  lower: "abcdefghijklmnopqrstuvwxyz",
-  numbers: "0123456789",
-  spaces: " ",
-  separators: "-_",
-  symbols: "!#$%&()*+./:;=>?@[\\]^`{|}~'\\",
-};
-
 /**
- * Хук usePasswordGenerator
+ * Хук usePasswordGenerator генерирует пароль на основе заданных настроек
  *
- * @param initialLength - начальная длина пароля (по умолчанию 6)
+ * @param initialLength - начальная длина пароля (по умолчанию MIN_PASSWORD_LENGTH)
  * @param initialSettings - начальные настройки (по умолчанию defaultSettings)
  *
  * @returns объект с текущим паролем, длиной, настройками и функциями для управления
  */
-
 export const usePasswordGenerator = (
-  initialLength: number = 6,
+  initialLength: number = MIN_PASSWORD_LENGTH,
   initialSettings: PasswordSettings = defaultSettings
 ) => {
   const [passwordLength, setPasswordLength] = useState<number>(initialLength);
   const [settings, setSettings] = useState<PasswordSettings>(initialSettings);
   const [password, setPassword] = useState<string>("");
   const [manualTrigger, setManualTrigger] = useState<boolean>(false);
+  const [isButtonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 
-  const generatePassword = () => {
-    const selectedCharSets = Object.entries(settings)
+  /**
+   * Возвращает активные ключи настроек.
+   */
+  const getActiveKeys = (): PasswordSettingKey[] => {
+    return Object.entries(settings)
       .filter(([_, value]) => value)
-      .map(([key]) => charSets[key as keyof typeof charSets]);
+      .map(([key]) => key as PasswordSettingKey);
+  };
 
-    if (selectedCharSets.length === 0) {
+  /**
+   * Возвращает допустимые ключи (исключая пробелы и разделители).
+   */
+  const getValidKeys = (): PasswordSettingKey[] => {
+    const activeKeys = getActiveKeys();
+    return activeKeys.filter((key) => key !== "spaces" && key !== "separators");
+  };
+
+  /**
+   * Возвращает выбранные наборы символов на основе активных ключей.
+   */
+  const getSelectedCharSets = (): string[] => {
+    const activeKeys = getActiveKeys();
+    return activeKeys.map((key) => charSets[key]);
+  };
+
+  const validateSettings = (): boolean => {
+    const activeKeys = getActiveKeys();
+    const validKeys = getValidKeys();
+
+    if (activeKeys.length === 0) {
       setPassword("Выберите хотя бы один параметр!");
-      return;
+      setButtonsDisabled(true);
+
+      return false;
     }
 
-    if (passwordLength < 6) {
-      setPassword("Минимальная длина 6 символов!");
-      return;
-    } else if (passwordLength > 30) {
-      setPassword("Максимальная длина 30 символов!");
-      return;
+    if (validKeys.length === 0) {
+      setPassword("Нельзя выбрать только пробелы и/или разделители!");
+      setButtonsDisabled(true);
+
+      return false;
     }
 
-    let allChars = selectedCharSets.join("");
-    let requiredChars = selectedCharSets.map((set) =>
-      set.charAt(Math.floor(Math.random() * set.length))
-    );
+    if (
+      passwordLength < MIN_PASSWORD_LENGTH ||
+      passwordLength > MAX_PASSWORD_LENGTH
+    ) {
+      const message =
+        passwordLength < MIN_PASSWORD_LENGTH
+          ? `Минимальная длина ${MIN_PASSWORD_LENGTH} символов!`
+          : `Максимальная длина ${MAX_PASSWORD_LENGTH} символов!`;
 
-    let remainingLength = passwordLength - requiredChars.length;
+      setPassword(message);
+      setButtonsDisabled(true);
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const generatePassword = (): void => {
+    if (!validateSettings()) return;
+
+    const selectedCharSets = getSelectedCharSets();
+    const allChars = selectedCharSets.join("");
+    let requiredChars = selectedCharSets.map(getRandomChar);
+
+    const remainingLength = passwordLength - requiredChars.length;
     let randomChars = Array.from({ length: remainingLength }, () =>
-      allChars.charAt(Math.floor(Math.random() * allChars.length))
+      getRandomChar(allChars)
     );
 
-    const newPassword = [...requiredChars, ...randomChars]
-      .sort(() => Math.random() - 0.5)
-      .join("");
+    // Объединяем и перемешиваем символы
+    let passwordArray = [...requiredChars, ...randomChars];
+    passwordArray = shuffleArray(passwordArray);
 
+    // Ограничиваем количество пробелов
+    passwordArray = limitSpaces(passwordArray, allChars);
+
+    // Корректируем позиции пробелов
+    passwordArray = adjustSpaces(passwordArray);
+
+    const newPassword = passwordArray.join("");
+
+    setButtonsDisabled(false);
     setPassword(newPassword);
   };
 
@@ -84,11 +132,16 @@ export const usePasswordGenerator = (
     generatePassword();
   }, [passwordLength, settings, manualTrigger]);
 
-  const toggleSetting = (key: keyof PasswordSettings) => {
+  /**
+   * Переключает значение настройки по ключу.
+   *
+   * @param key - Ключ настройки (например, "upper", "lower").
+   */
+  const toggleSetting = (key: PasswordSettingKey): void => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const regenerate = () => {
+  const regenerate = (): void => {
     setManualTrigger((prev) => !prev);
   };
 
@@ -96,6 +149,7 @@ export const usePasswordGenerator = (
     password,
     passwordLength,
     settings,
+    isButtonsDisabled,
     setPasswordLength,
     toggleSetting,
     regenerate,

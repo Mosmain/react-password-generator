@@ -10,6 +10,7 @@ function App() {
     password,
     passwordLength,
     settings,
+    isButtonsDisabled,
     setPasswordLength,
     toggleSetting,
     regenerate,
@@ -43,7 +44,11 @@ function App() {
         </Tab>
       </Tabs>
 
-      <GenerateButtons onCopy={onCopy} onReset={regenerate} />
+      <GenerateButtons
+        disabled={isButtonsDisabled}
+        onCopy={onCopy}
+        onReset={regenerate}
+      />
     </div>
   );
 }

@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
  *   - copied: boolean — флаг, указывающий, что копирование прошло успешно, и который автоматически сбрасывается через timeoutDuration
  *   - copyToClipboard: (text: string) => void — функция, принимающая текст для копирования в буфер обмена
  */
-
 export const useCopyToClipboard = (timeoutDuration: number = 2000) => {
   const [copied, setCopied] = useState(false);
 
