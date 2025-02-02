@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   charSets,
   MAX_PASSWORD_LENGTH,
@@ -39,32 +39,23 @@ export const usePasswordGenerator = (
   const [manualTrigger, setManualTrigger] = useState<boolean>(false);
   const [isButtonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 
-  /**
-   * Возвращает активные ключи настроек.
-   */
-  const getActiveKeys = (): PasswordSettingKey[] => {
+  const getActiveKeys = useCallback((): PasswordSettingKey[] => {
     return Object.entries(settings)
-      .filter(([_, value]) => value)
+      .filter((value) => value)
       .map(([key]) => key as PasswordSettingKey);
-  };
+  }, [settings]);
 
-  /**
-   * Возвращает допустимые ключи (исключая пробелы и разделители).
-   */
-  const getValidKeys = (): PasswordSettingKey[] => {
+  const getValidKeys = useCallback((): PasswordSettingKey[] => {
     const activeKeys = getActiveKeys();
     return activeKeys.filter((key) => key !== "spaces" && key !== "separators");
-  };
+  }, [getActiveKeys]);
 
-  /**
-   * Возвращает выбранные наборы символов на основе активных ключей.
-   */
-  const getSelectedCharSets = (): string[] => {
+  const getSelectedCharSets = useCallback((): string[] => {
     const activeKeys = getActiveKeys();
     return activeKeys.map((key) => charSets[key]);
-  };
+  }, [getActiveKeys]);
 
-  const validateSettings = (): boolean => {
+  const validateSettings = useCallback((): boolean => {
     const activeKeys = getActiveKeys();
     const validKeys = getValidKeys();
 
@@ -98,17 +89,17 @@ export const usePasswordGenerator = (
     }
 
     return true;
-  };
+  }, [passwordLength, getActiveKeys, getValidKeys]);
 
-  const generatePassword = (): void => {
+  const generatePassword = useCallback((): void => {
     if (!validateSettings()) return;
 
     const selectedCharSets = getSelectedCharSets();
     const allChars = selectedCharSets.join("");
-    let requiredChars = selectedCharSets.map(getRandomChar);
+    const requiredChars = selectedCharSets.map(getRandomChar);
 
     const remainingLength = passwordLength - requiredChars.length;
-    let randomChars = Array.from({ length: remainingLength }, () =>
+    const randomChars = Array.from({ length: remainingLength }, () =>
       getRandomChar(allChars)
     );
 
@@ -126,11 +117,11 @@ export const usePasswordGenerator = (
 
     setButtonsDisabled(false);
     setPassword(newPassword);
-  };
+  }, [passwordLength, validateSettings, getSelectedCharSets]);
 
   useEffect(() => {
     generatePassword();
-  }, [passwordLength, settings, manualTrigger]);
+  }, [passwordLength, settings, manualTrigger, generatePassword]);
 
   /**
    * Переключает значение настройки по ключу.
