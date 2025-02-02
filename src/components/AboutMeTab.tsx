@@ -1,53 +1,78 @@
 import { FC } from "react";
-import { Fieldset, Checkbox, Dropdown } from "@react95/core";
+import {
+  Fieldset,
+  Avatar,
+  Frame,
+} from "@react95/core";
 
 export const AboutMeTab: FC = () => {
   return (
     <>
-      <p
-        style={{
-          marginTop: 0,
-          marginBottom: "1.6em",
-        }}
+      <Frame
+        display="inline-flex"
+        gap="8px"
+        style={{ alignContent: "center", marginBottom: "1rem" }}
       >
-        If you have problems with this program and it worked correctly on an
-        earlier version of Windows, select the compatibility mode that matches
-        that earlier version.
-      </p>
-
-      <Fieldset
-        legend="Compatibility mode"
-        style={{
-          marginBottom: "1.6em",
-        }}
-      >
-        <Checkbox readOnly checked>
-          Run this program in compatibility mode for:
-        </Checkbox>
-        <Dropdown
-          style={{
-            width: 200,
-          }}
-          options={["Windows 95"]}
+        <Avatar
+          src="avatar.jpg"
+          style={{ flexShrink: 0 }}
+          size="64px"
+          alt="photo"
+          title="avatar.jpg (859B)"
         />
+        <p>
+          Салют, я frontend-разработчик на Vue, но хочу расширить стек React'ом
+        </p>
+      </Frame>
+
+      <Fieldset legend="Навыки">
+        <Frame display="flex" flexDirection="column">
+          <h3 style={{ margin: 0, marginBottom: "0.5rem" }}>Commercial</h3>
+          <span>
+            <b>Языки:</b> JavaScript, TypeScript
+          </span>
+          <span>
+            <b>Фреймворки:</b> Vue 3 (Composition API), Vue 2
+          </span>
+          <span>
+            <b>State Management:</b> Vuex, Pinia
+          </span>
+          <span>
+            <b>API & Data:</b> Axios, TanStack Query
+          </span>
+          <span>
+            <b>UI-библиотеки:</b> Element Plus, Ant Design
+          </span>
+          <span>
+            <b>Сборка:</b> Vite, Webpack
+          </span>
+
+          <h3 style={{ margin: "0.5rem 0" }}>Non-commercial (yet)</h3>
+          <span>React</span>
+        </Frame>
       </Fieldset>
 
-      <Fieldset legend="Display Settings">
-        <Checkbox>Run in 256 colors</Checkbox>
-        <Checkbox>Run in 640 x 480 screen resolution</Checkbox>
-        <Checkbox>Disable visual themes</Checkbox>
-      </Fieldset>
-
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
       <p>
-        Learn more about <a href="#">program compatibility.</a>
+        Контакты{" "}
+        <a href="https://t.me/mosmain" target="_blank" rel="noreferrer">
+          Telegram
+        </a>{" "}
+        |{" "}
+        <a
+          href="https://www.linkedin.com/in/mosmain"
+          target="_blank"
+          rel="noreferrer"
+        >
+          LinkedIn
+        </a>{" "}
+        |{" "}
+        <a
+          href="https://career.habr.com/mosmain"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Habr.Career
+        </a>
       </p>
     </>
   );
