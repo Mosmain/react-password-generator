@@ -9,5 +9,5 @@ export const charSets: Record<PasswordSettingKey, string> = {
   numbers: "0123456789",
   spaces: " ",
   separators: "-_",
-  symbols: "!#$%&()*+./:;=>?@[\\]^`{|}~'\\",
+  symbols: "!#$%&()*+./:;=>?@[\\]^`{|}~'",
 };
